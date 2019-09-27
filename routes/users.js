@@ -11,18 +11,6 @@ axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
 axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
 
-router.get('/repos/:user/:repo/topics', function(req, res, next) {
-  axios.get(`${BASE_URL}/repos/${req.params.user}/${req.params.repo}/topics`)
-    .then((response) => {
-      const data = response.data;
-      
-      res.send(data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-});
-
 router.get('/users/:user/repos', function(req, res, next) {
   axios.get(`${BASE_URL}/users/${req.params.user}/repos`)
     .then((response) => {
