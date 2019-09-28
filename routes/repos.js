@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var cheerio = require('cheerio');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const axios = require('axios');
 const {
   graphql
@@ -18,8 +20,12 @@ const getURLs = async function(topics){
   let urls = [];
   for (let i = 0; i < topics.length; i++){
     try{
-      response = await axios.get(`https://github.com/topics/${topics[i]}`);
-      urls.push("");
+      let xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", `https://github.com/topics/${topics[i]}`, false ); // false for synchronous request
+      xmlHttp.send( null );
+      response = xmlHttp.responseText;
+      const $ = cheerio.load(response);
+      urls.push($(`[alt='${topics[i]} logo']`).attr("src"));
     } catch (error){
       console.log(error);
       urls.push("");
