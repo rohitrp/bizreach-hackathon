@@ -14,6 +14,20 @@ const LOCALHOST_BASE_URL = process.env.LOCALHOST_BASE_URL;
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
 axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
 
+const getURLs = async function(topics){
+  let urls = [];
+  for (let i = 0; i < topics.length; i++){
+    try{
+      response = await axios.get(`https://github.com/topics/${topics[i]}`);
+      urls.push("");
+    } catch (error){
+      console.log(error);
+      urls.push("");
+    }
+  }
+  return urls;
+}
+
 router.get('/users/:user/topics', async function (req, res, next) {
   await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
     .then(async (repos) => {
@@ -25,9 +39,8 @@ router.get('/users/:user/topics', async function (req, res, next) {
           topics.push(...repo.topics);
         }
       }
-
-      res.send(topics);
-
+      urls = await getURLs(topics);
+      res.send({'topics': topics, 'urls': urls});
     })
     .catch(error => {
       console.log(error);
