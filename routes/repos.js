@@ -157,38 +157,41 @@ router.get("/users/:user/repos", async function(req, res, next) {
 router.get('/users/:user/stats', async function (req, res, next) {
   let debugging = 0, maintainability = 0, flexibility_to_learn = 0, collaboration = 0, general_statistics = 0;
 
-  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/issues`)
+  const promises = [];
+  promises.push(axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/issues`)
     .then((response) => {
       debugging = response.data.data;
     })
-    .catch(console.log);
+    .catch(console.log));
 
-  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/starScore`)
+    promises.push(axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/starScore`)
     .then((response) => {
       general_statistics = response.data.data;
     })
-    .catch(console.log);
+    .catch(console.log));
   
-  await axios.get(`${LOCALHOST_BASE_URL}/code/${req.params.user}`)
+    promises.push(axios.get(`${LOCALHOST_BASE_URL}/code/${req.params.user}`)
     .then((response) => {
       const data = response.data;
       maintainability = (data.comment + data.style + data.format + data.variable) / 4;
     })
-    .catch(console.log);
+    .catch(console.log));
   
-  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/topics`)
+    promises.push(axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/topics`)
     .then((response) => {
       const data = response.data;
       expertise = data.topics.length * 6;
-    });
+    }));
 
-  res.send({
-    'maintainability':maintainability,
-    'debugging': debugging,
-    'flexibility_to_learn': expertise,
-    'collaboration': 84,
-    'general_statistics': general_statistics
-  });
+    Promise.all(promises, () => {
+      res.send({
+        'maintainability':maintainability,
+        'debugging': debugging,
+        'flexibility_to_learn': expertise,
+        'collaboration': 84,
+        'general_statistics': general_statistics
+      });
+    })
 });
 
 router.get("/users/:user/collaborators", async function(req, res, next) {
