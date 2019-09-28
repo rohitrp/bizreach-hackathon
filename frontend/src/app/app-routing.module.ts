@@ -5,6 +5,7 @@ import { UserComponent } from './user/user.component';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { MaintainabilityComponent } from './maintainability/maintainability.component';
 import { DebugComponent } from './debug/debug.component';
+import { GeneralStatComponent } from './general-stat/general-stat.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,13 @@ const routes: Routes = [
   {
     path: 'user/:username/debug',
     component: DebugComponent,
+    data: {
+      title: 'User analysis'
+    }
+  },
+  {
+    path: 'user/:username/general',
+    component: GeneralStatComponent,
     data: {
       title: 'User analysis'
     }

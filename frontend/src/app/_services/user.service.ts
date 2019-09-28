@@ -16,12 +16,17 @@ export class UserService {
   }
 
   public getUserMaintainabilityStat(username) {
-    const url = `${this.apiBaseUrl}/code/${username}/repos/all`;
+    const url = `${this.apiBaseUrl}/code/${username}/repos/all/formatted`;
     return this.http.get(url);
   }
 
   public getDebugStat(username) {
-    const url = `${this.apiBaseUrl}/users/${username}/issues/repos`;
+    const url = `${this.apiBaseUrl}/users/${username}/repo/issues/objects`;
+    return this.http.get(url);
+  }
+
+  public getGeneralStat(username) {
+    const url = `${this.apiBaseUrl}/users/${username}/general-statistic`;
     return this.http.get(url);
   }
 

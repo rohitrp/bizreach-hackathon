@@ -13,51 +13,39 @@ export class BarChartComponent implements AfterViewInit {
   constructor() { }
 
   ngAfterViewInit() {
-    // const repos = Object.keys(this.data);
-    // const labels = this.data.labels;
+    let datasets = [];
+    const colors = ["#3e95cd", "#8e5ea2", "#26a69a", "#f57f17"];
 
-    // let dataset = [];
-    // const colors = ["#3e95cd", "#8e5ea2", "#26a69a", "#f57f17"];
+    for (var i = 0; i < this.data.labels.length; i++) {
+      datasets.push({
+        "label": this.data.labels[i],
+        "backgroundColor": colors[i],
+        "data": []
+      });
+    }
+    let labels = [];
+    for (var i = 0; i < this.data.repos.length; i++) {
+      const repo = this.data.repos[i];
+      labels.push(repo.nameWithOwner);
+      for (var j = 0; j < this.data.labels.length; j++) {
+        datasets[j].data.push(repo.values[j]);
+      }
+    }
+    
 
-    // for (var i = 0; i < labels.length; i++) {
-    //   dataset.push({
-    //     'label': labels[i],
-    //     'backgroundColor': colors[i],
-    //     // 'data': this.data[]
-    //   })
-    // }
-
-    // var myBarChart = new Chart(document.getElementById("bar-chart-grouped"), {
-    //   type: 'bar',
-    //   data: {
-    //     labels: repos,
-    //     datasets: [
-    //       {
-    //         label: "Naming Conventions",
-    //         backgroundColor: "#3e95cd",
-    //         data: [95, 80, 98, 70]
-    //       }, {
-    //         label: "Documentation",
-    //         backgroundColor: "#8e5ea2",
-    //         data: [20, 30, 35, 15]
-    //       }, {
-    //         label: "Format Conventions",
-    //         backgroundColor: "#26a69a",
-    //         data: [50, 44, 60, 90]
-    //       }, {
-    //         label: "Code Consistency",
-    //         backgroundColor: "#f57f17",
-    //         data: [60, 23, 78, 60]
-    //       }
-    //     ]
-    //   },
-    //   options: {
-    //     title: {
-    //       display: true,
-    //       text: this.chart_name
-    //     }
-    //   }
-    // });
+    var myBarChart = new Chart(document.getElementById("bar-chart-grouped"), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        title: {
+          display: true,
+          text: this.chart_name
+        }
+      }
+    });
 
   }
 
