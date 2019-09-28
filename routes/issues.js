@@ -13,9 +13,9 @@ axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+
 
 
 
-router.get('/user/:user/repo/issues/objects', function (req, res, next) {
+router.get('/users/:user/repo/issues/objects', function (req, res, next) {
     console.log(req.params.user);
-    axios.get(`http://172.16.199.73:3000/api/users/${req.params.user}/repos`)
+    axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
         .then((response) => {
             getAllIssuesForEachRepo(response.data, res, req)
         })
@@ -39,7 +39,7 @@ router.get('/users/:user/issues', function (req, res, next) {
 });
 
 router.get('/user/:user/repo/issues/fraction', function (req, res, next) {
-    axios.get(`http://172.16.199.73:3000/api/users/${req.params.user}/repos`)
+    axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
         .then((response) => {
             getIssuesForOneRepo(response.data, res, req)
 
