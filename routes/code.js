@@ -10,7 +10,6 @@ require('dotenv').config();
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const BASE_URL = process.env.BASE_URL;
 
-axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
 axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
 
