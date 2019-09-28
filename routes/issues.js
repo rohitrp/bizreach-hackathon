@@ -22,78 +22,46 @@ router.get('/users/:user/issues', function (req, res, next) {
         });
 });
 
-function getIssues(response, res, req) {
-    var numberOfrepos = response.data.length;
-    console.log(numberOfrepos);
+async function getIssues(response, res, req) {
+    var completed_issues = 0,
+        total_issues = 0;
+
     for (var i = 0; i < response.data.length; i++) {
-        var repoName = response.data[i].name;
-      //  console.log(repoName);
-        var completed_requests = 0;
-        axios.get(`${BASE_URL}/repos/${req.params.user}/${repoName}/issues?state=all`)
+        var repoName = response.data[i].nameWithOwner;
+
+        await axios.get(`${BASE_URL}/repos/${repoName}/issues?state=all`)
             .then((responseIssue) => {
-                const data = responseIssue.data.length;
-                console.log(responseIssue.data);
-                completed_requests++;
-                var finalResponse = 0;
+                completed_issues++;
                 //console.log("*********************")
                 for (var i = 0; i < responseIssue.data.length; i++) {
-                    for (var j = 0; j < responseIssue.data[i].assignees; j++) {
+                    // console.log(responseIssue.data[i]);
+
+                    for (var j = 0; j < responseIssue.data[i].assignees.length; j++) {
                         if (responseIssue.data[i].assignees[j].login === req.params.user) {
-                            finalResponse++;
+                            if (responseIssue.data[i].state === 'closed') {
+                                completed_issues++;
+                            }
                         }
                     }
+                    total_issues++;
                 }
-                if (completed_requests === numberOfrepos) {
-                    console.log(finalResponse);
-                    //res.send(finalResponse);
-                    if(finalResponse !== 0)
-                         getClosedIssues(res, finalResponse, response.data, req)
-                    else
-                        res.send({'data': 100 })
-                }
-
             })
             .catch(error => {
                 console.log(error);
             });
     }
-
-}
-
-function getClosedIssues(res, numberOfIssues, repos, req) {
-
-    var numberOfrepos = repos.length;
-    //console.log(numberOfrepos);
-    for (var i = 0; i < repos.length; i++) {
-        var repoName = repos[i].name;
-        // console.log(repoName);
-        var completed_requests = 0;
-        axios.get(`${BASE_URL}/repos/${req.params.user}/${repoName}/issues?state=closed`)
-            .then((responseIssue) => {
-                const data = responseIssue.data.length;
-                completed_requests++;
-                var finalResponse = 0;
-                //console.log("*********************")
-                for (var i = 0; i < responseIssue.data.length; i++) {
-                    for (var j = 0; j < responseIssue.data[i].assignees; j++) {
-                        if (responseIssue.data[i].assignees[j].login === req.params.user) {
-                            finalResponse++;
-                        }
-                    }
-                }
-                if (completed_requests === numberOfrepos) {
-                    // All download done, process responses array
-                    console.log(numberOfIssues);
-                    console.log(finalResponse)
-                    res.send({'data': finalResponse / numberOfIssues});
-                }
-
-            })
-            .catch(error => {
-                console.log(error);
-            });
+    console.log(completed_issues);
+    console.log(total_issues);
+    if (total_issues === 0) {
+        res.send({
+            'data': 100
+        });
+    } else {
+        res.send({
+            'data': (completed_issues / total_issues) * 100
+        });
     }
-}
 
+}
 
 module.exports = router;
