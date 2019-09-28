@@ -32,6 +32,7 @@ function getIssues(response, res, req) {
         axios.get(`${BASE_URL}/repos/${req.params.user}/${repoName}/issues?state=all`)
             .then((responseIssue) => {
                 const data = responseIssue.data.length;
+                console.log(responseIssue.data);
                 completed_requests++;
                 var finalResponse = 0;
                 //console.log("*********************")
