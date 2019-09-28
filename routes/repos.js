@@ -38,12 +38,16 @@ router.get('/users/:user/topics', async function (req, res, next) {
       var topics = [];
       for (var i = 0; i < repos.data.length; i++) {
         const repo = repos.data[i];
-
-        if (repo.topics.length !== 0) {
-          topics.push(...repo.topics);
-        }
+        for (var j = 0; j < repo.topics.length; j++)
+          if (!topics.includes(repo.topics[j]))
+            topics.push(repo.topics[j]);
+        // Get languages
+        response_languages = await axios.get(repo.languages_url);
+        languages = Object.keys(response_languages.data);
+        for (var j = 0; j < languages.length; j++)
+          if (!topics.includes(languages[j].toLowerCase()))
+            topics.push(languages[j].toLowerCase());
       }
-
       urls = await getURLs(topics);
       res.send({'topics': topics, 'urls': urls});
     })
@@ -172,11 +176,16 @@ router.get('/users/:user/stats', async function (req, res, next) {
     })
     .catch(console.log);
   
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/topics`)
+    .then((response) => {
+      const data = response.data;
+      expertise = data.topics.length * 6;
+    });
 
   res.send({
     'maintainability':maintainability,
     'debugging': debugging,
-    'flexibility_to_learn': 72,
+    'flexibility_to_learn': expertise,
     'collaboration': 84,
     'general_statistics': general_statistics
   });
