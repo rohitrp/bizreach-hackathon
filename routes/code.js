@@ -52,16 +52,16 @@ const countWarning = function(audit, keywords){
 const getStyleConsistency = async function(script){
     // Write the java script to a file and check style
     try{
-        fs.writeFileSync("assets\\checkstyle\\script.java", script);
+        fs.writeFileSync("assets/checkstyle/script.java", script);
         let {err, stdout, stderr} = await exec(
             "java -jar checkstyle-8.24-all.jar -c /google_checks.xml script.java > out", 
             {
-                cwd: 'assets\\checkstyle'
+                cwd: 'assets/checkstyle'
             });
         if (err){
             console.log(err);
         } else {
-            let audit = fs.readFileSync("assets\\checkstyle\\out", 'utf8');
+            let audit = fs.readFileSync("assets/checkstyle/out", 'utf8');
             audit = audit.split("\r");
             let line_count = countLine(script);
             let comment_count = countComment(script);
@@ -93,13 +93,13 @@ router.get('/code/:user', async function(req, res, next) {
         response_repos = await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`);
         // Loop through all repos
         for (let k = 0; k < response_repos.data.length; k++){
-            response_commits = await axios.get(`${BASE_URL}/repos/${req.params.user}/${response_repos.data[k].name}/commits`)
+            response_commits = await axios.get(`${BASE_URL}/repos/${response_repos.data[k].nameWithOwner}/commits`)
             const data = response_commits.data;
             // Loop through commits
             for (let i = 0; i < data.length; i++){
                 let sha = data[i].sha;
                 try {
-                    let response_single = await axios.get(`${BASE_URL}/repos/${req.params.user}/${response_repos.data[k].name}/commits/${sha}`);
+                    let response_single = await axios.get(`${BASE_URL}/repos/${response_repos.data[k].nameWithOwner}/commits/${sha}`);
                     let files = response_single.data.files;
                     //Loop through files
                     for (let j = 0; j < files.length; j++){

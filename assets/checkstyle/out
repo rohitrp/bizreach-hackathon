@@ -1,4 +1,11 @@
 Starting audit...
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:4: Wrong lexicographical order for 'android.os.Bundle' import. Should be before 'android.support.v4.app.Fragment'. [CustomImportOrder]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:12: The name of the outer type and the file do not match. [OuterTypeFilename]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:14: 'ctor def modifier' has incorrect indentation level 4, expected level should be 2. [Indentation]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:15: 'ctor def rcurly' has incorrect indentation level 4, expected level should be 2. [Indentation]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:17: 'method def modifier' has incorrect indentation level 4, expected level should be 2. [Indentation]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:20: 'method def' child has incorrect indentation level 8, expected level should be 4. [Indentation]
+[WARN] /Users/rp/bizreach-hackathon/assets/checkstyle/script.java:21: 'method def rcurly' has incorrect indentation level 4, expected level should be 2. [Indentation]
 [WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:16: Wrong lexicographical order for 'android.os.Bundle' import. Should be before 'android.support.v7.app.AppCompatActivity'. [CustomImportOrder]
 [WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:30: Wrong lexicographical order for 'computing.mobile.ambulance.util.Constant' import. Should be before 'org.json.JSONObject'. [CustomImportOrder]
 [WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:31: Wrong lexicographical order for 'computing.mobile.ambulance.util.ServerRequest' import. Should be before 'org.json.JSONObject'. [CustomImportOrder]

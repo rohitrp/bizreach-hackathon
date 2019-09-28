@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,13 @@ const routes: Routes = [
   {
     path: 'user/:username',
     component: UserComponent,
+    data: {
+      title: 'User analysis'
+    }
+  },
+  {
+    path: 'user/:username/maintainability',
+    component: BarChartComponent,
     data: {
       title: 'User analysis'
     }
