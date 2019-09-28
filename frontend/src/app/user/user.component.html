@@ -9,15 +9,23 @@
     <div class="columns is-centered has-text-centered">
       <div class="column">
         <a class="button is-primary" routerLink="maintainability">Maintainability</a>
+        <br>
+        <progress class="progress is-primary" value="{{stats['maintainability']}}" max="100">15%</progress>
       </div>
       <div class="column">
         <a class="button is-primary">General Stats</a>
+        <br>
+        <progress class="progress is-primary" value="{{stats['general_statistics']}}" max="100">15%</progress>
       </div>
       <div class="column">
-        <a class="button is-primary">Flexibility to learn</a>
+        <a class="button is-primary">Expertise</a>
+        <br>
+        <progress class="progress is-primary" value="{{stats['flexibility_to_learn']}}" max="100">15%</progress>
       </div>
       <div class="column">
-        <a class="button is-primary">Testing & debugging</a>
+        <a class="button is-primary" routerLink="debug">Testing & debugging</a>
+        <br>
+        <progress class="progress is-primary" value="{{stats['debugging']}}" max="100">15%</progress>
       </div>
     </div>
   </div>

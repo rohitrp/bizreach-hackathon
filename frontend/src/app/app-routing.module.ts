@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { MaintainabilityComponent } from './maintainability/maintainability.component';
+import { DebugComponent } from './debug/debug.component';
 
 const routes: Routes = [
   {
@@ -21,7 +23,14 @@ const routes: Routes = [
   },
   {
     path: 'user/:username/maintainability',
-    component: BarChartComponent,
+    component: MaintainabilityComponent,
+    data: {
+      title: 'User analysis'
+    }
+  },
+  {
+    path: 'user/:username/debug',
+    component: DebugComponent,
     data: {
       title: 'User analysis'
     }
