@@ -137,4 +137,25 @@ router.get('/users/:user/repos/collaborators', async function(req, res, next) {
   res.send({ 'data': Array.from(collaborators) });
 })
 
+// Returns {repoName: NoOfStars, .....}
+router.get('/users/:user/stars', async function(req, res, next) {
+  let collaborators = new Set();
+  await axios.get(`/users/${req.params.user}/repos`)
+    .then(async (repos) => {
+      let repoStarCountMap = {};
+      let data = repos.data;
+      let promises = [];
+      data.forEach(element => {
+        let repoName = element.name;
+        let starGazersUrl = element.stargazers_url;
+        promises.push(axios.get(starGazersUrl).then((response)=>{
+          repoStarCountMap[repoName] = response.data.length;
+        }));
+      });
+      Promise.all(promises).then(() => {
+        res.send(repoStarCountMap);
+      });
+    }).catch(console.log);
+})
+
 module.exports = router;
