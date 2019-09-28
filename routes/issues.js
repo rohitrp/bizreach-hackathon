@@ -143,13 +143,14 @@ async function getIssues(response, res, req) {
 function getAllIssuesForEachRepo(response, res, req) {
 
     var numberOfrepos = response.length;
-    var allIssues = [];
+    var allIssues = [{labels: ["number of assgined issues", "number of closed issues"]} ];
     console.log(numberOfrepos);
     var completed_requests = 0;
     for (var i = 0; i < response.length; i++) {
         var repoName = response[i].nameWithOwner;
         console.log(repoName);
-        var finalResponse = 0;
+        var numberOfIssues = 0;
+        var numberOfClosedIssues = 0;
         axios.get(`https://api.github.com/repos/${repoName}/issues`)
             .then((responseIssue) => {
                 completed_requests++;
@@ -162,14 +163,17 @@ function getAllIssuesForEachRepo(response, res, req) {
                 for (var i = 0; i < responseIssue.length; i++) {
                     for (var j = 0; j < responseIssue[i].assignees.length; j++) {
                         if (responseIssue[i].assignees[j].login === req.params.user) {
-                            finalResponse++;
-                            repoIssues = [...repoIssues, responseIssue[i]];
+                            numberOfIssues++;
+                            if (responseIssue.data[i].state === 'closed') {
+                                numberOfClosedIssues++;
+                            }
                         }
                     }
                 }
-                allIssues = [...allIssues, repoIssues];
+                repoIssues = [...repoIssues, {nameWithOwner: repoName, values: [numberOfIssues, numberOfClosedIssues] } ];
                 if (completed_requests === numberOfrepos) {
                     //console.log(allIssues);
+                    allIssues = [...allIssues, {repos: repoIssues}];
                     res.send({'data': allIssues});
                 }
 
