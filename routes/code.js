@@ -9,6 +9,7 @@ require('dotenv').config();
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const BASE_URL = process.env.BASE_URL;
+const LOCALHOST_BASE_URL = process.env.LOCALHOST_BASE_URL;
 
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
 axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
@@ -89,7 +90,7 @@ router.get('/code/:user', async function(req, res, next) {
     let maintainability = {"comment": 0, "style": 0, "variable": 0, "format": 0};
     let count = 0;
     try{
-        response_repos = await axios.get(`http://localhost:3000/api/users/${req.params.user}/repos`);
+        response_repos = await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`);
         // Loop through all repos
         for (let k = 0; k < response_repos.data.length; k++){
             response_commits = await axios.get(`${BASE_URL}/repos/${req.params.user}/${response_repos.data[k].name}/commits`)
