@@ -7,16 +7,28 @@ require("dotenv").config();
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const BASE_URL = process.env.BASE_URL;
+const LOCALHOST_BASE_URL = process.env.LOCALHOST_BASE_URL;
 
-axios.defaults.headers.common["Authorization"] = `token ${ACCESS_TOKEN}`;
-axios.defaults.headers.common[
-  "Accept"
-] = `application/vnd.github.mercy-preview+json`;
+axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
+axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
 
-router.get("/users/:user/topics", async function(req, res, next) {
-  await axios
-    .get(`${BASE_URL}/users/${req.params.user}/repos`)
-    .then(async repos => {
+const getURLs = async function(topics){
+  let urls = [];
+  for (let i = 0; i < topics.length; i++){
+    try{
+      response = await axios.get(`https://github.com/topics/${topics[i]}`);
+      urls.push("");
+    } catch (error){
+      console.log(error);
+      urls.push("");
+    }
+  }
+  return urls;
+}
+
+router.get('/users/:user/topics', async function (req, res, next) {
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+    .then(async (repos) => {
       var topics = [];
       for (var i = 0; i < repos.data.length; i++) {
         const repo = repos.data[i];
@@ -26,7 +38,8 @@ router.get("/users/:user/topics", async function(req, res, next) {
         }
       }
 
-      res.send(topics);
+      urls = await getURLs(topics);
+      res.send({'topics': topics, 'urls': urls});
     })
     .catch(error => {
       console.log(error);
@@ -75,46 +88,59 @@ router.get("/users/:user/repos", async function(req, res, next) {
 
 router.get("/users/:user/stats", function(req, res, next) {
   res.send({
-    activity: 58,
-    maintainibility: 23,
-    debugging: 88,
-    area_expertise: 72,
-    collaboration: 44
+
+    'maintainability':63,
+    'debugging': 88,
+    'flexibility_to_learn': 72,
+    'collaboration': 84,
+    'general_statistics': 58
   });
 });
 
 router.get("/users/:user/collaborators", async function(req, res, next) {
   let collaborators = new Set();
 
-  await axios.get(`/users/${req.params.user}/repos`).then(async repos => {
-    repos = repos.data;
-    for (var i = 0; i < repos.length; i++) {
-      const repo = repos[i];
 
-      await axios
-        .get(`/repos/${repo.full_name}/collaborators`)
-        .then(collabs => {
-          collabs = collabs.data;
-          for (var j = 0; j < collabs.length; j++) {
-            collaborators.add(collabs[j].login);
-          }
-        })
-        .catch(console.log);
-    }
-  });
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+    .then(async (repos) => {
+      repos = repos.data;
+      for (var i = 0; i < repos.length; i++) {
+        const repo = repos[i];
+        
+        await axios.get(`${LOCALHOST_BASE_URL}/repos/${repo.full_name}/collaborators`)
+          .then((collabs) => {
+            collabs = collabs.data;
+            for (var j = 0; j < collabs.length; j++) {
+              collaborators.add(collabs[j].login);
+            }
+          })
+          .catch(console.log);
+      }
+    });
+  
+  res.send({ 'data': Array.from(collaborators) });
+})
 
-  res.send({ data: Array.from(collaborators) });
-});
+router.get('/users/:user/repos/collaborators', async function(req, res, next) {
+  let collaborators = {}
 
-router.get("/users/:user/repos/collaborators", async function(req, res, next) {
-  let collaborators = {};
-
-  await axios.get(`/users/${req.params.user}/repos`).then(async repos => {
-    repos = repos.data;
-    for (var i = 0; i < repos.length; i++) {
-      const repo = repos[i];
-      if (!(repo.full_name in collaborators)) {
-        collaborators[repo.full_name] = new Set();
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+    .then(async (repos) => {
+      repos = repos.data;
+      for (var i = 0; i < repos.length; i++) {
+        const repo = repos[i];
+        if (!(repo.full_name in collaborators)) {
+          collaborators[repo.full_name] = new Set();
+        }
+        await axios.get(`${BASE_URL}/repos/${repo.full_name}/collaborators`)
+          .then((collabs) => {
+            collabs = collabs.data;
+            for (var j = 0; j < collabs.length; j++) {
+              collaborators[repo.full_name].add(collabs[j].login);
+              console.log(collaborators)
+            }
+          })
+          .catch(console.log);
       }
       await axios
         .get(`/repos/${repo.full_name}/collaborators`)

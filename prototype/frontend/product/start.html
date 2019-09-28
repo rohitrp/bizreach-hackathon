@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Start</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <a class="navbar-brand">GITabil</a>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+
+    <br><br>
+
+    <div class="container">
+
+        <div class="row justify-content-start">
+            <div class="col-md-3">
+                <div onClick ="showInputInspect();" class="card text-center" style="width: 18rem;">
+                    <img class="card-img-top" src="../img/1.png" alt="Card image cap"
+                        style="height: 200px; width: 200px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Inspect a profile</h5>
+                        <input id="githubName" class="form-control" placeholder="Github Name" aria-label="Github Name" aria-describedby="basic-addon1" type="hidden"><br>
+                        <button onclick="window.location.href='inspect.html?githubName='+githubName.value;" id="goInspect" style="visibility :hidden;" class="btn btn-info">Go</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+            <div onClick ="showInputCompare();" class="card text-center" style="width: 18rem;">
+                <img class="card-img-top" src="../img/2.jpg" alt="Card image cap" style="height: 200px; width: 200px;">
+                <div class="card-body">
+                    <h5 class="card-title">Compare profiles</h5>
+                    <input id="githubName1" class="form-control" placeholder="Github Name 1" aria-label="Github Name 1" aria-describedby="basic-addon1" type="hidden"><br>
+                    <input id="githubName2" class="form-control" placeholder="Github Name 2" aria-label="Github Name 2" aria-describedby="basic-addon1" type="hidden"><br>
+                    <button id="goCompare" style="visibility :hidden;" class="btn btn-info">Go</button>
+                 
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+
+
+
+
+
+    <script>
+        function showInputInspect() {
+            document.getElementById('githubName').setAttribute("type","text");
+            document.getElementById('goInspect').style.visibility = 'visible';
+
+        }
+    
+        function showInputCompare(){
+            document.getElementById('githubName1').setAttribute("type","text");
+            document.getElementById('githubName2').setAttribute("type","text");
+
+            document.getElementById('goCompare').style.visibility = 'visible';
+        }
+    </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

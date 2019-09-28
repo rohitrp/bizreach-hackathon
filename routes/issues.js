@@ -6,14 +6,14 @@ require('dotenv').config();
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const BASE_URL = process.env.BASE_URL;
+const LOCALHOST_BASE_URL = process.env.LOCALHOST_BASE_URL;
 
-axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
 axios.defaults.headers.common['Accept'] = `application/vnd.github.mercy-preview+json`;
 
-router.get('/repos/:user/issues', function (req, res, next) {
+router.get('/users/:user/issues', function (req, res, next) {
 
-    axios.get(`/users/${req.params.user}/repos`)
+    axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
         .then((response) => {
             getIssues(response, res, req)
         })
@@ -45,8 +45,10 @@ function getIssues(response, res, req) {
                 if (completed_requests === numberOfrepos) {
                     console.log(finalResponse);
                     //res.send(finalResponse);
-                    if(finalResponse != 0)
+                    if(finalResponse !== 0)
                          getClosedIssues(res, finalResponse, response.data, req)
+                    else
+                        res.send({'data': 100 })
                 }
 
             })
@@ -82,7 +84,7 @@ function getClosedIssues(res, numberOfIssues, repos, req) {
                     // All download done, process responses array
                     console.log(numberOfIssues);
                     console.log(finalResponse)
-                    res.send(finalResponse / numberOfIssues);
+                    res.send({'data': finalResponse / numberOfIssues});
                 }
 
             })
