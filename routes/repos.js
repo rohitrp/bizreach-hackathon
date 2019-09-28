@@ -151,14 +151,12 @@ router.get('/users/:user/repos/collaborators', async function(req, res, next) {
 });
 
 // Returns {repoName: NoOfStars, .....}
-router.get("/users/:user/starCountMap", async function(req, res, next) {
+router.get(`/users/:user/starCountMap`, async function(req, res, next) {
   await axios
-    .get(`${BASE_URL}/users/${req.params.user}/repos`)
+    .get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
     .then(async repos => {
       let repoStarCountMap = {};
       let data = repos.data;
-      let promises = [];
-      console.log(data[0].stargazers_count);
       data.forEach(element => {
         let repoName = element.name;
         let starGazersCount = element.stargazers_count;
@@ -170,14 +168,12 @@ router.get("/users/:user/starCountMap", async function(req, res, next) {
 });
 
 // Returns {score for stars: 0 < 100}
-router.get("/users/:user/starScore", async function(req, res, next) {
+router.get(`/users/:user/starScore`, async function(req, res, next) {
   await axios
-    .get(`${BASE_URL}/users/${req.params.user}/repos`)
+    .get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
     .then(async repos => {
       let repoStarCountMap = {};
       let data = repos.data;
-      let promises = [];
-      console.log(data[0].stargazers_count);
       data.forEach(element => {
         let repoName = element.name;
         let starGazersCount = element.stargazers_count;
