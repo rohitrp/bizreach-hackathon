@@ -142,19 +142,7 @@ router.get('/users/:user/repos/collaborators', async function(req, res, next) {
           })
           .catch(console.log);
       }
-      await axios
-        .get(`/repos/${repo.full_name}/collaborators`)
-        .then(collabs => {
-          collabs = collabs.data;
-          for (var j = 0; j < collabs.length; j++) {
-            collaborators[repo.full_name].add(collabs[j].login);
-            console.log(collaborators);
-          }
-        })
-        .catch(console.log);
-    }
-  });
-
+    });
   const keys = Object.keys(collaborators);
   for (var i = 0; i < keys.length; i++) {
     collaborators[keys[i]] = Array.from(collaborators[keys[i]]);
