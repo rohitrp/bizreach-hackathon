@@ -1,0 +1,7 @@
+Starting audit...
+[WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:1:1: Javadoc comment is placed in the wrong location. [InvalidJavadocPosition]
+[WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:23: Summary javadoc is missing. [SummaryJavadoc]
+[WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:26: 'package' should be separated from previous statement. [EmptyLineSeparator]
+[WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:31: Wrong lexicographical order for 'com.iluwatar.throttling.CallsCount' import. Should be before 'java.util.TimerTask'. [CustomImportOrder]
+[WARN] C:\Users\minhtuan270820000\Documents\GitHub\bizreach-hackathon\assets\checkstyle\script.java:38: The name of the outer type and the file do not match. [OuterTypeFilename]
+Audit done.
