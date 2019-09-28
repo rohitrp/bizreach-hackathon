@@ -74,10 +74,40 @@ router.get("/users/:user/repos", async function(req, res, next) {
 
   // console.log(repository);
 
-  axios
-    .get(`${BASE_URL}/users/${req.params.user}/repos`)
-    .then(response => {
-      const data = response.data.filter(x => x.language === "Java");
+  axios.post(`https://api.github.com/graphql`, 
+    {
+      'query':
+    `
+    {
+      repositoryOwner(login:"rohitrp"){
+        repositories(first:100) {
+          edges {
+            node {
+              id
+              name
+              nameWithOwner
+              url
+              primaryLanguage {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    }    
+    `
+  }
+  ).then(response => {
+      response = response.data.data.repositoryOwner.repositories.edges;
+      console.log(response);
+      const data = response.filter(x => {
+        if (x.node.primaryLanguage) {
+          if(x.node.primaryLanguage.name === "Java") return true;
+        } else {
+          return false;
+        }
+      });
 
       res.send(data);
     })
