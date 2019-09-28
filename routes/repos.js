@@ -1,13 +1,11 @@
 var express = require("express");
 var router = express.Router();
 var cheerio = require('cheerio');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var fs = require('fs');
 const axios = require('axios');
 const {
   graphql
 } = require("@octokit/graphql");
-const axios = require("axios");
-const { graphql } = require("@octokit/graphql");
 
 require("dotenv").config();
 
@@ -22,12 +20,10 @@ const getURLs = async function(topics){
   let urls = [];
   for (let i = 0; i < topics.length; i++){
     try{
-      let xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", `https://github.com/topics/${topics[i]}`, false ); // false for synchronous request
-      xmlHttp.send( null );
-      response = xmlHttp.responseText;
+      response = fs.readFileSync("assets\\topicURLs\\source.html", 'utf8');
       const $ = cheerio.load(response);
-      urls.push($(`[alt='${topics[i]} logo']`).attr("src"));
+      
+      urls.push($(`[alt='${topics[i]}']`).attr("src"));
     } catch (error){
       console.log(error);
       urls.push("");
