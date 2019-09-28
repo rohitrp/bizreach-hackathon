@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 var cheerio = require('cheerio');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -6,8 +6,10 @@ const axios = require('axios');
 const {
   graphql
 } = require("@octokit/graphql");
+const axios = require("axios");
+const { graphql } = require("@octokit/graphql");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const BASE_URL = process.env.BASE_URL;
@@ -45,16 +47,16 @@ router.get('/users/:user/topics', async function (req, res, next) {
           topics.push(...repo.topics);
         }
       }
+
       urls = await getURLs(topics);
       res.send({'topics': topics, 'urls': urls});
     })
     .catch(error => {
       console.log(error);
-    })
-
+    });
 });
 
-router.get('/users/:user/repos', async function (req, res, next) {
+router.get("/users/:user/repos", async function(req, res, next) {
   // const {
   //   repository
   // } = await graphql(
@@ -82,9 +84,10 @@ router.get('/users/:user/repos', async function (req, res, next) {
 
   // console.log(repository);
 
-  axios.get(`${BASE_URL}/users/${req.params.user}/repos`)
-    .then((response) => {
-      const data = response.data.filter((x) => x.language === 'Java');
+  axios
+    .get(`${BASE_URL}/users/${req.params.user}/repos`)
+    .then(response => {
+      const data = response.data.filter(x => x.language === "Java");
 
       res.send(data);
     })
@@ -93,18 +96,27 @@ router.get('/users/:user/repos', async function (req, res, next) {
     });
 });
 
-router.get('/users/:user/stats', function (req, res, next) {
+router.get('/users/:user/stats', async function (req, res, next) {
+  let debugging = 0, maintainability = 0, flexibility_to_learn = 0, collaboration = 0, general_statistics = 0;
+
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/issues`)
+    .then((response) => {
+      debugging = response.data.data;
+    })
+    .catch(console.log);
+
   res.send({
     'maintainability':63,
-    'debugging': 88,
+    'debugging': debugging,
     'flexibility_to_learn': 72,
     'collaboration': 84,
-    'general_statistics': 58
+    'general_statistics': general_statistics
   });
 });
 
-router.get('/users/:user/collaborators', async function(req, res, next) {
+router.get("/users/:user/collaborators", async function(req, res, next) {
   let collaborators = new Set();
+
 
   await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
     .then(async (repos) => {
@@ -148,12 +160,71 @@ router.get('/users/:user/repos/collaborators', async function(req, res, next) {
           .catch(console.log);
       }
     });
-  
   const keys = Object.keys(collaborators);
   for (var i = 0; i < keys.length; i++) {
     collaborators[keys[i]] = Array.from(collaborators[keys[i]]);
   }
-  res.send({ 'data': Array.from(collaborators) });
-})
+  res.send({ data: Array.from(collaborators) });
+});
+
+// Returns {repoName: NoOfStars, .....}
+router.get(`/users/:user/starCountMap`, async function(req, res, next) {
+  await axios
+    .get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+    .then(async repos => {
+      let repoStarCountMap = {};
+      let data = repos.data;
+      data.forEach(element => {
+        let repoName = element.name;
+        let starGazersCount = element.stargazers_count;
+        repoStarCountMap[repoName] = starGazersCount;
+      });
+        res.send(repoStarCountMap);
+    })
+    .catch(console.log);
+});
+
+// Returns {score for stars: 0 < 100}
+router.get(`/users/:user/starScore`, async function(req, res, next) {
+  await axios
+    .get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+    .then(async repos => {
+      let repoStarCountMap = {};
+      let data = repos.data;
+      data.forEach(element => {
+        let repoName = element.name;
+        let starGazersCount = element.stargazers_count;
+        repoStarCountMap[repoName] = starGazersCount;
+      });
+      let totalCount = 0;
+      for (let repoName in repoStarCountMap) {
+        totalCount += repoStarCountMap[repoName];
+      }
+      let score = 0;
+      if (totalCount < 10) {
+        score = 10;
+      } else if (totalCount < 1000) {
+        score = 20;
+      } else if (totalCount < 10000) {
+        score = 30;
+      } else if (totalCount < 100000) {
+        score = 40;
+      } else if (totalCount < 100000) {
+        score = 50;
+      } else if (totalCount < 1000000) {
+        score = 60;
+      } else if (totalCount < 10000000) {
+        score = 70;
+      } else if (totalCount < 100000000) {
+        score = 80;
+      } else if (totalCount < 1000000000) {
+        score = 90;
+      } else {
+        score = 100;
+      }
+      res.send({starScore: score});
+    })
+    .catch(console.log);
+});
 
 module.exports = router;
