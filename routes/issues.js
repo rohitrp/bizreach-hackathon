@@ -4,8 +4,8 @@ const axios = require('axios');
 
 require('dotenv').config();
 
-const ACCESS_TOKEN = 'a6d96fb6d70c09403da480f060bf0aee2c54d809';
-const BASE_URL = 'https://api.github.com';
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const BASE_URL = process.env.BASE_URL;
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['Authorization'] = `token ${ACCESS_TOKEN}`;
@@ -43,11 +43,10 @@ function getIssues(response, res, req) {
                     }
                 }
                 if (completed_requests === numberOfrepos) {
-                    // All download done, process responses array
                     console.log(finalResponse);
                     //res.send(finalResponse);
                     if(finalResponse != 0)
-                         getOpenIssues(res, finalResponse, response.data, req)
+                         getClosedIssues(res, finalResponse, response.data, req)
                 }
 
             })
@@ -58,7 +57,7 @@ function getIssues(response, res, req) {
 
 }
 
-function getOpenIssues(res, numberOfIssues, repos, req) {
+function getClosedIssues(res, numberOfIssues, repos, req) {
 
     var numberOfrepos = repos.length;
     //console.log(numberOfrepos);
