@@ -176,11 +176,16 @@ router.get('/users/:user/stats', async function (req, res, next) {
     })
     .catch(console.log);
   
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/topics`)
+    .then((response) => {
+      const data = response.data;
+      expertise = data.topics.length * 6;
+    });
 
   res.send({
     'maintainability':maintainability,
     'debugging': debugging,
-    'flexibility_to_learn': 72,
+    'flexibility_to_learn': expertise,
     'collaboration': 84,
     'general_statistics': general_statistics
   });
