@@ -244,8 +244,8 @@ router.get(`/users/:user/starCountMap`, async function(req, res, next) {
       let repoStarCountMap = {};
       let data = repos.data;
       data.forEach(element => {
-        let repoName = element.name;
-        let starGazersCount = element.stargazers_count;
+        let repoName = element.nameWithOwner;
+        let starGazersCount = element.stargazers.totalCount;
         repoStarCountMap[repoName] = starGazersCount;
       });
         res.send(repoStarCountMap);
