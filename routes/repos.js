@@ -1,7 +1,11 @@
 var express = require("express");
 var router = express.Router();
-const axios = require("axios");
-const { graphql } = require("@octokit/graphql");
+var cheerio = require('cheerio');
+var fs = require('fs');
+const axios = require('axios');
+const {
+  graphql
+} = require("@octokit/graphql");
 
 require("dotenv").config();
 
@@ -16,8 +20,10 @@ const getURLs = async function(topics){
   let urls = [];
   for (let i = 0; i < topics.length; i++){
     try{
-      response = await axios.get(`https://github.com/topics/${topics[i]}`);
-      urls.push("");
+      response = fs.readFileSync("assets\\topicURLs\\source.html", 'utf8');
+      const $ = cheerio.load(response);
+      
+      urls.push($(`[alt='${topics[i]}']`).attr("src"));
     } catch (error){
       console.log(error);
       urls.push("");
