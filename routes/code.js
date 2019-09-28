@@ -300,6 +300,8 @@ router.get('/code/:user/:repo/commits', async function (req, res, next) {
 });
 
 router.get('/users/:user/colabs', async function (req, res, next) {
+    // Does not work
+
     await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos/old`)
     .then(async (repos) => {
         let colabs = [];
@@ -307,9 +309,10 @@ router.get('/users/:user/colabs', async function (req, res, next) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open( "GET", `https://github.com/${req.params.user}/${repos.data[i].name}/graphs/contributors`, false ); // false for synchronous request
             xmlHttp.send( null );
+            //fs.writeFileSync("text.html", xmlHttp.responseText);
             const $ = cheerio.load(xmlHttp.responseText);
             $("[data-hovercard-type='user']").each((i, elem) => {
-                console.log(i);
+                //console.log(i);
                 if (!colabs.includes($(elem).text())) colabs.push($(elem).text());
             });
         }

@@ -3,6 +3,7 @@ var router = express.Router();
 var cheerio = require('cheerio');
 var fs = require('fs');
 const axios = require('axios');
+var gs = require('github-scraper');
 const {
   graphql
 } = require("@octokit/graphql");
@@ -284,6 +285,17 @@ router.get(`/users/:user/starScore`, async function(req, res, next) {
       res.send({'data': score});
     })
     .catch(console.log);
+});
+
+router.get(`/users/:user/general-statistic`, async function(req, res, next) {
+  var url = '/' + req.params.user;
+  gs(url, function(err, data) {
+    if (err){
+      console.log(err);
+    } else {
+      res.send({"repos": data.repos, "stars": data.stars, "followers": data.followers, "contributions": data.contribs});
+    }
+  });
 });
 
 module.exports = router;
