@@ -86,14 +86,21 @@ router.get("/users/:user/repos", async function(req, res, next) {
     });
 });
 
-router.get("/users/:user/stats", function(req, res, next) {
-  res.send({
+router.get('/users/:user/stats', async function (req, res, next) {
+  let debugging = 0, maintainability = 0, flexibility_to_learn = 0, collaboration = 0, general_statistics = 0;
 
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/issues`)
+    .then((response) => {
+      debugging = response.data.data;
+    })
+    .catch(console.log);
+
+  res.send({
     'maintainability':63,
-    'debugging': 88,
+    'debugging': debugging,
     'flexibility_to_learn': 72,
     'collaboration': 84,
-    'general_statistics': 58
+    'general_statistics': general_statistics
   });
 });
 
