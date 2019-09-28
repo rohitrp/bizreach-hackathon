@@ -76,11 +76,11 @@ router.get('/users/:user/repos', async function (req, res, next) {
 
 router.get('/users/:user/stats', function (req, res, next) {
   res.send({
-    'activity': 58,
-    'maintainibility': 23,
+    'maintainability':63,
     'debugging': 88,
-    'area_expertise': 72,
-    'collaboration': 44
+    'flexibility_to_learn': 72,
+    'collaboration': 84,
+    'general_statistics': 58
   });
 });
 
