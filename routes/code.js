@@ -1,7 +1,8 @@
 var express = require('express');
 var exec = require('child_process').exec;
-var path = require('path');
 var fs = require('fs');
+var cheerio = require('cheerio');
+var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var router = express.Router();
 const axios = require('axios');
 
@@ -224,7 +225,37 @@ router.get('/code/:user/repos/all', async function (req, res, next) {
         'data': data
     });
 
-})
+});
+
+router.get('/code/:user/repos/all/formatted', async function (req, res, next) {
+    let data = [];
+    await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+        .then(async (repos) => {
+            repos = repos.data;
+
+            for (var i = 0; i < repos.length; i++) {
+                const repo = repos[i];
+                await axios.get(`${LOCALHOST_BASE_URL}/code/${repo.nameWithOwner}`)
+                    .then((stat) => {
+                        stat = stat.data;
+                        data.push(
+                            {
+                                "nameWithOwner": repo.nameWithOwner, 
+                                "values": [stat.style, stat.comment, stat.variable, stat.format]
+                            }
+                        );
+                    })
+            }
+        });
+    res.send(
+    {
+        "data": {
+            "labels": ["style", "comment", "variable", "format"],
+            "repos": data
+        }
+    });
+
+});
 
 router.get('/code/:user/:repo/commits', async function (req, res, next) {
     axios.get(`${BASE_URL}/repos/${req.params.user}/${req.params.repo}/commits`)
@@ -266,6 +297,27 @@ router.get('/code/:user/:repo/commits', async function (req, res, next) {
         .catch(error => {
             console.log(error);
         });
+});
+
+router.get('/users/:user/colabs', async function (req, res, next) {
+    await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos/old`)
+    .then(async (repos) => {
+        let colabs = [];
+        for (let i = 0; i < repos.data.length; i++){
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", `https://github.com/${req.params.user}/${repos.data[i].name}/graphs/contributors`, false ); // false for synchronous request
+            xmlHttp.send( null );
+            const $ = cheerio.load(xmlHttp.responseText);
+            $("[data-hovercard-type='user']").each((i, elem) => {
+                console.log(i);
+                if (!colabs.includes($(elem).text())) colabs.push($(elem).text());
+            });
+        }
+        res.send({"colaborators": colabs});
+    })
+    .catch(error => {
+        console.log(error);
+    });
 });
 
 module.exports = router;

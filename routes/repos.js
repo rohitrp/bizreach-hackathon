@@ -200,7 +200,7 @@ router.get("/users/:user/collaborators", async function(req, res, next) {
     });
   
   res.send({ 'data': Array.from(collaborators) });
-})
+});
 
 router.get('/users/:user/repos/collaborators', async function(req, res, next) {
   let collaborators = {}
