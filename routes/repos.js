@@ -20,7 +20,7 @@ const getURLs = async function(topics){
   let urls = [];
   for (let i = 0; i < topics.length; i++){
     try{
-      response = fs.readFileSync("assets\\topicURLs\\source.html", 'utf8');
+      response = fs.readFileSync("assets/topicURLs/source.html", 'utf8');
       const $ = cheerio.load(response);
       
       urls.push($(`[alt='${topics[i]}']`).attr("src"));
@@ -33,7 +33,7 @@ const getURLs = async function(topics){
 }
 
 router.get('/users/:user/topics', async function (req, res, next) {
-  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos`)
+  await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/repos/old`)
     .then(async (repos) => {
       var topics = [];
       for (var i = 0; i < repos.data.length; i++) {
@@ -56,33 +56,19 @@ router.get('/users/:user/topics', async function (req, res, next) {
     });
 });
 
-router.get("/users/:user/repos", async function(req, res, next) {
-  // const {
-  //   repository
-  // } = await graphql(
-  //   `
-  //   {
-  //     viewer {
-  //       repositoriesContributedTo(first: 100, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
-  //         totalCount
-  //         nodes {
-  //           nameWithOwner
-  //         }
-  //         pageInfo {
-  //           endCursor
-  //           hasNextPage
-  //         }
-  //       }
-  //     }
-  //   }
-  //   `, {
-  //     headers: {
-  //       authorization: `token ${ACCESS_TOKEN}`
-  //     }
-  //   }
-  // );
+router.get("/users/:user/repos/old", async function(req, res, next) {
+  axios.get(`${BASE_URL}/users/${req.params.user}/repos`)
+    .then((response) => {
+      const data = response.data.filter((x) => x.language === 'Java');
 
-  // console.log(repository);
+      res.send(data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+
+router.get("/users/:user/repos", async function(req, res, next) {
 
   axios.post(`https://api.github.com/graphql`, 
     {
@@ -179,7 +165,7 @@ router.get('/users/:user/stats', async function (req, res, next) {
   await axios.get(`${LOCALHOST_BASE_URL}/users/${req.params.user}/topics`)
     .then((response) => {
       const data = response.data;
-      expertise = data.topics.length * 6;
+      expertise = Math.min(data.topics.length * 6, 100);
     });
 
   res.send({
@@ -253,8 +239,8 @@ router.get(`/users/:user/starCountMap`, async function(req, res, next) {
       let repoStarCountMap = {};
       let data = repos.data;
       data.forEach(element => {
-        let repoName = element.name;
-        let starGazersCount = element.stargazers_count;
+        let repoName = element.nameWithOwner;
+        let starGazersCount = element.stargazers.totalCount;
         repoStarCountMap[repoName] = starGazersCount;
       });
         res.send(repoStarCountMap);

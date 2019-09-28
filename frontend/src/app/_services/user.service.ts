@@ -14,6 +14,17 @@ export class UserService {
     const url = `${this.apiBaseUrl}/users/${username}/stats`;
     return this.http.get(url);
   }
+
+  public getUserMaintainabilityStat(username) {
+    const url = `${this.apiBaseUrl}/code/${username}/repos/all`;
+    return this.http.get(url);
+  }
+
+  public getDebugStat(username) {
+    const url = `${this.apiBaseUrl}/users/${username}/issues/repos`;
+    return this.http.get(url);
+  }
+
   constructor(
     private http: HttpClient
   ) { }

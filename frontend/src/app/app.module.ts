@@ -8,19 +8,27 @@ import { UserComponent } from './user/user.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { MaintainabilityComponent } from './maintainability/maintainability.component';
+import { GeneralStatComponent } from './general-stat/general-stat.component';
+import { DebugComponent } from './debug/debug.component';
+import { ExpertiseComponent } from './expertise/expertise.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     UserComponent,
-    BarChartComponent
+    BarChartComponent,
+    MaintainabilityComponent,
+    GeneralStatComponent,
+    DebugComponent,
+    ExpertiseComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
